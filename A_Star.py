@@ -106,7 +106,7 @@ def reconstruct_path(came_from, current, draw):
         current.make_path()
         draw()
 
-# Thuật toán A* Lõi
+# Thuật toán A*
 def algorithm(draw, grid, start, end):
     count = 0
     open_set = PriorityQueue()
