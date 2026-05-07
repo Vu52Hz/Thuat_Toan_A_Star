@@ -20,14 +20,14 @@ GREY = (128, 128, 128)      # Đường kẻ lưới
 
 class Node:
     def __init__(self, row, col, width, total_rows):
-        self.row = row
-        self.col = col
-        self.x = row * width
-        self.y = col * width
-        self.color = WHITE
-        self.neighbors = []
-        self.width = width
-        self.total_rows = total_rows
+        self.row = row       # Vị trí hàng trong ma trận lưới
+        self.col = col       # Vị trí cột trong ma trận lưới
+        self.x = col * width # Tọa độ X thực tế trên màn hình pixel
+        self.y = row * width # Tọa độ Y thực tế trên màn hình pixel
+        self.color = WHITE   # Mặc định lúc sinh ra là ô trống (màu trắng)
+        self.neighbors = []  # Danh sách các ô hàng xóm (trên, dưới, trái, phải)
+        self.width = width   # Kích thước cạnh của ô vuông
+        self.total_rows = total_rows # Tổng số hàng của lưới
 
     def get_pos(self):
         return self.row, self.col
@@ -73,24 +73,31 @@ class Node:
 
     def update_neighbors(self, grid):
         self.neighbors = []
-        # Kiểm tra Hướng Dưới
-        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():
-            self.neighbors.append(grid[self.row + 1][self.col])
-        # Kiểm tra Hướng Trên
-        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():
-            self.neighbors.append(grid[self.row - 1][self.col])
         # Kiểm tra Hướng Phải
         if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():
             self.neighbors.append(grid[self.row][self.col + 1])
         # Kiểm tra Hướng Trái
         if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():
             self.neighbors.append(grid[self.row][self.col - 1])
+        # Kiểm tra Hướng Dưới
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():
+            self.neighbors.append(grid[self.row + 1][self.col])
+        # Kiểm tra Hướng Trên
+        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():
+            self.neighbors.append(grid[self.row - 1][self.col])
+        
 
 # Hàm Heuristic (Sử dụng khoảng cách Manhattan)
 def h(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
     return abs(x1 - x2) + abs(y1 - y2)
+
+# Hàm Heuristic: Euclidean
+# def h(p1, p2):
+#     x1, y1 = p1
+#     x2, y2 = p2
+#     return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
 # Hàm vẽ lại đường đi sau khi tìm thấy đích
 def reconstruct_path(came_from, current, draw):
@@ -178,7 +185,7 @@ def draw(win, grid, rows, width):
 
 def get_clicked_pos(pos, rows, width):
     gap = width // rows
-    y, x = pos
+    x, y = pos
     row = y // gap
     col = x // gap
     return row, col
